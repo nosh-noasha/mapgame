@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>נוש ונושה</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      direction: rtl;
+    }
+    .line {
+      font-size: 18px;
+      padding: 10px;
+      display: none;
+    }
+    .question-container {
+      display: none;
+    }
+    img {
+      max-width: 80%;
+      height: auto;
+      border: 2px solid #ccc;
+      margin-top: 20px;
+    }
+    input[type="text"] {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 18px;
+      width: 90%;
+      max-width: 400px;
+      direction: rtl;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background-color: #ffd54f;
+    }
+    #message, #result {
+      font-size: 18px;
+      padding: 30px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+<div id="intro">
+  <p class="line" id="line0">נוש, אנחנו כבר מתקרבים לסוף.</p>
+  <p class="line" id="line1">יש גבול כמה אתה יכול לפתור שאלות על עצמך בלי להיות נרקיסיסט וכמה אני יכולה לעבוד עם הצ'אט בלי לשבור את המחשב.</p>
+  <p class="line" id="line2">לפני שנגיע לסוף אני מאחלת לך יום הולדת שמח ושכל החיים שלך יהיו מלאים בחוויות חיוביות ומרגשות.</p>
+  <p class="line" id="line3">שתזכה להגשים את כל הטיולים שלך (רצוי ביחד איתי) ושתמיד תחלום בגדול גם אם החלומות לא פרקטיים.</p>
+  <p class="line" id="line4">היה לי את הזכות להיות איתך ביום ההולדת הזאת ולחגוג את הקיום שלך ביחד איתך.</p>
+  <p class="line" id="line5">אז יאללה, בוא נסיים כי יש לנו טיסה לתפוס.</p>
+  <p class="line" id="line6">מוכן?</p>
+</div>
+
+<div class="question-container" id="questionBox">
+  <img id="questionImage" src="" alt="מפה">
+  <div><input type="text" id="answerInput" placeholder="הקלד כאן את תשובתך"></div>
+  <div><button onclick="checkAnswer()">בדוק</button></div>
+  <div id="result"></div>
+</div>
+
+<div id="message" style="display: none;"></div>
+
+<script>
+const introLines = [...document.querySelectorAll("#intro .line")];
+let introIndex = 0;
+
+function showNextIntroLine() {
+  if (introIndex < introLines.length) {
+    introLines[introIndex].style.display = "block";
+    introIndex++;
+  } else {
+    document.getElementById("intro").style.display = "none";
+    showQuestion();
+  }
+}
+
+function handleAdvance() {
+  if (!document.getElementById("questionBox").style.display || document.getElementById("questionBox").style.display === "none") {
+    showNextIntroLine();
+  }
+}
+
+window.addEventListener("click", handleAdvance);
+window.addEventListener("touchstart", handleAdvance);
+
+const questions = [
+  { image: "1.jpg", answer: ["חוף הצוק"] },
+  { image: "2.jpg", answer: ["גבעת הספלולים"] },
+  { image: "3.jpg", answer: ["נומי"] }
+];
+
+let current = 0;
+
+function showQuestion() {
+  const q = questions[current];
+  const box = document.getElementById("questionBox");
+  const img = document.getElementById("questionImage");
+  const input = document.getElementById("answerInput");
+  const result = document.getElementById("result");
+  const msg = document.getElementById("message");
+
+  msg.style.display = "none";
+  img.src = q.image;
+  input.value = "";
+  result.textContent = "";
+  box.style.display = "block";
+}
+
+function checkAnswer() {
+  const input = document.getElementById("answerInput").value.trim();
+  const result = document.getElementById("result");
+  const q = questions[current];
+  const normalized = input.replace(/\s|"|'/g, "");
+  const isCorrect = q.answer.some(ans => normalized.includes(ans.replace(/\s/g, "")));
+
+  if (isCorrect) {
+    result.textContent = "תשובה נכונה! ✅";
+    setTimeout(() => {
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        result.textContent = "סיימת את כל החידה! 🎉";
+      }
+    }, 2000);
+  } else {
+    result.textContent = "לא נכון, נסה שוב 🙈";
+  }
+}
+</script>
+
+</body>
+</html>
